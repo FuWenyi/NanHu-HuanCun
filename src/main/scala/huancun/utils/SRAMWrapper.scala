@@ -37,7 +37,10 @@ class SRAMWrapper[T <: Data]
   val banks = (0 until n).map{ i =>
     val ren = if(n == 1) true.B else i.U === r_sel
     val wen = if(n == 1) true.B else i.U === w_sel
-    val sram = Module(new SRAMTemplate[T](
+    /*val sram = Module(new SRAMTemplate[T](
+      gen, innerSet, 1, singlePort = true, input_clk_div_by_2 = clk_div_by_2
+    ))*/
+    val sram = Module(new DataEccSRAMTemplate[T](
       gen, innerSet, 1, singlePort = true, input_clk_div_by_2 = clk_div_by_2
     ))
 
@@ -69,5 +72,7 @@ class SRAMWrapper[T <: Data]
   io.r.resp.data := Mux1H(ren_vec, banks.map(_.io.r.resp.data))
 
   io.w.req.ready := Cat(banks.map(_.io.w.req.ready)).andR()
+
+  //println("Data+EccSram Width: %d, Set: %d, Way: %d, singlePort: %d\n", gen.getWidth.W, set, 1, true)
 
 }
