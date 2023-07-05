@@ -79,48 +79,16 @@ class TS5N28HPCPLVTA256X32M2F extends ExtModule with HasExtModuleResource {
   addResource("/TS5N28HPCPLVTA256X32M2F.v")
 }
 
-class TS5N28HPCPLVTA1024X16M8F extends ExtModule with HasExtModuleResource {
+class TS5N28HPCPLVTA1024X64M2F extends ExtModule with HasExtModuleResource {
   //  val io = IO(new Bundle {
-  val Q =   IO(Output(UInt(16.W)))
-  val CLK = IO(Input(Clock()))
-  val CEB = IO(Input(Bool()))
-  val WEB = IO(Input(Bool()))
-  val A =   IO(Input(UInt(10.W)))
-  val D =   IO(Input(UInt(16.W)))
-  //  })
-  addResource("/TS5N28HPCPLVTA1024X16M8F.v")
-}
-
-class TS5N28HPCPLVTA1024X64M8F extends Module {
   val Q =   IO(Output(UInt(64.W)))
   val CLK = IO(Input(Clock()))
   val CEB = IO(Input(Bool()))
   val WEB = IO(Input(Bool()))
   val A =   IO(Input(UInt(10.W)))
   val D =   IO(Input(UInt(64.W)))
-  
-  val sram = Seq.fill(4)(Module(new TS5N28HPCPLVTA1024X16M8F()))
-  sram.map(_.CLK := CLK)
-  // sram.map(_.A := Mux(WEB, setIdx, r.req.bits.setIdx))
-  sram.zipWithIndex.map{
-    case (s, i) => s.CEB := CEB
-  }
-  sram.zipWithIndex.map{
-    case (s, i) => s.WEB := WEB
-  }
-
-  sram(0).A := A
-  sram(1).A := A
-  sram(2).A := A
-  sram(3).A := A
-
-
-  sram(0).D := D(15,0)
-  sram(1).D := D(31,16)
-  sram(2).D := D(47,32)
-  sram(3).D := D(63,48)
-
-  Q := Cat(sram(3).Q, sram(2).Q, sram(1).Q, sram(0).Q)
+  //  })
+  addResource("/TS5N28HPCPLVTA1024X64M2F.v")
 }
 
 class SRAMBundleA(val set: Int) extends Bundle {
@@ -380,7 +348,7 @@ class DataEccSRAMTemplate[T <: Data]
   override def desiredName: String = if (input_clk_div_by_2) s"ClkDiv2SRAMTemplate" else super.desiredName
   val wordType = UInt(gen.getWidth.W)
   //val array = SyncReadMem(set, Vec(way, wordType))
-  val sram = Seq.fill(way)(Module(new TS5N28HPCPLVTA1024X64M8F()))
+  val sram = Seq.fill(way)(Module(new TS5N28HPCPLVTA1024X64M2F()))
   val (resetState, resetSet) = (WireInit(false.B), WireInit(0.U))
 
   if (shouldReset) {

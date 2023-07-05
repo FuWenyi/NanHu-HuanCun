@@ -1,7 +1,7 @@
-module STD_CLKGT_func (
+module CKLNQD12BWP40P140LVT (
   input  wire TE,
   input  wire E,
-  input  wire CK,
+  input  wire CP,
   output wire Q
 );
 
@@ -10,11 +10,11 @@ module STD_CLKGT_func (
 
   assign clk_en = E | TE;
 
-  always @(posedge CK) 
+  always @(posedge CP) 
     begin
       clk_en_reg = clk_en;
     end
 
-  assign Q = CK & clk_en_reg;
+  assign Q = CP & clk_en_reg;
 
 endmodule // Copy from Xihu
