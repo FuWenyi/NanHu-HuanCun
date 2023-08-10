@@ -1,6 +1,7 @@
 package huancun.prefetch
 
-import huancun.utils.SRAMTemplate
+//import huancun.utils.SRAMTemplate
+import huancun.utils._
 import chipsalliance.rocketchip.config.Parameters
 import chisel3._
 import chisel3.util._
@@ -116,7 +117,8 @@ class RecentRequestTable(implicit p: Parameters) extends BOPModule {
   }
 
   val rrTable = Module(
-    new SRAMTemplate(rrTableEntry(), set = rrTableEntries, way = 1, shouldReset = true, singlePort = true)
+    //new SRAMTemplate(rrTableEntry(), set = rrTableEntries, way = 1, shouldReset = true, singlePort = true)
+    new RrSRAMTemplate(rrTableEntry(), set = rrTableEntries, way = 1, shouldReset = true, singlePort = true)
   )
 
   val wAddr = io.w.bits

@@ -37,7 +37,10 @@ class SRAMWrapper[T <: Data]
   val banks = (0 until n).map{ i =>
     val ren = if(n == 1) true.B else i.U === r_sel
     val wen = if(n == 1) true.B else i.U === w_sel
-    val sram = Module(new SRAMTemplate[T](
+    /*val sram = Module(new SRAMTemplate[T](
+      gen, innerSet, 1, singlePort = true, input_clk_div_by_2 = clk_div_by_2
+    ))*/
+    val sram = Module(new WrapSRAMTemplate[T](
       gen, innerSet, 1, singlePort = true, input_clk_div_by_2 = clk_div_by_2
     ))
 
